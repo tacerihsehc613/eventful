@@ -1,0 +1,25 @@
+{
+  "name": "events-ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "polly",
+  "license": "ISC",
+  "dependencies": {
+    "@types/react": "^18.2.18",
+    "@types/react-dom": "^18.2.7",
+    "bootstrap": "^5.3.1",
+    "promise-polyfill": "8.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "ts-loader": "^9.4.4",
+    "whatwg-fetch": "^3.6.17"
+  },
+  "devDependencies": {
+    "source-map-loader": "^4.0.1",
+    "typescript": "^5.1.6"
+  }
+}
