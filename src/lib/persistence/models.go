@@ -2,6 +2,12 @@ package persistence
 
 import "gopkg.in/mgo.v2/bson"
 
+type Booking struct {
+	Date    int64
+	EventID []byte
+	Seats   int
+}
+
 type Event struct {
 	ID        bson.ObjectId `bson:"_id"`
 	Name      string

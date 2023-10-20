@@ -49,6 +49,12 @@ func (mgoLayer *MongoDBLayer) AddLocation(l persistence.Location) (persistence.L
 	return l, err
 }
 
+func (mgoLayer *MongoDBLayer) AddBookingForUser(id []byte, b persistence.Booking) error {
+	s := mgoLayer.getFreshSession()
+	defer s.Close()
+	return s.DB(DB).C(USERS).UpdateId(bson.ObjectId(id), bson.M{"$addToSet": bson.M{"bookings": b}})
+}
+
 func (mgoLayer *MongoDBLayer) FindEvent(id []byte) (persistence.Event, error) {
 	s := mgoLayer.getFreshSession()
 	defer s.Close()

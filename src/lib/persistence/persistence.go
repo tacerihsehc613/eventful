@@ -1,6 +1,8 @@
 package persistence
 
 type DatabaseHandler interface {
+	AddBookingForUser([]byte, Booking) error
+
 	AddEvent(Event) ([]byte, error)
 	FindEvent([]byte) (Event, error)
 	FindEventByName(string) (Event, error)
