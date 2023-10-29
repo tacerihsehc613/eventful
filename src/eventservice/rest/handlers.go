@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -50,10 +49,11 @@ func (eh *eventServiceHandler) FindEventHandler(w http.ResponseWriter, r *http.R
 	case "name":
 		event, err = eh.dbhandler.FindEventByName(searchkey)
 	case "id":
-		id, err := hex.DecodeString(searchkey)
+		/* id, err := hex.DecodeString(searchkey)
 		if err == nil {
 			event, err = eh.dbhandler.FindEvent(id)
-		}
+		} */
+		event, err = eh.dbhandler.FindEvent(searchkey)
 	}
 	if err != nil {
 		fmt.Fprintf(w, "{error %s}", err)
@@ -79,6 +79,23 @@ func (eh *eventServiceHandler) AllEventHandler(w http.ResponseWriter, r *http.Re
 	}
 }
 
+func (eh *eventServiceHandler) oneEventHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, ok := vars["eventID"]
+	if !ok {
+		w.WriteHeader(400)
+		fmt.Fprintf(w, "missing route parameter 'eventID")
+		return
+	}
+	event, err := eh.dbhandler.FindEvent(id)
+	if err != nil {
+		w.WriteHeader(404)
+		fmt.Fprintf(w, "event with id %s was not found", id)
+	}
+	w.Header().Set("Content-Type", "application/json;charset=utf8")
+	json.NewEncoder(w).Encode(&event)
+}
+
 func (eh *eventServiceHandler) NewEventHandler(w http.ResponseWriter, r *http.Request) {
 	event := persistence.Event{}
 	err := json.NewDecoder(r.Body).Decode(&event)
@@ -94,9 +111,10 @@ func (eh *eventServiceHandler) NewEventHandler(w http.ResponseWriter, r *http.Re
 		return
 	}
 	msg := contracts.EventCreatedEvent{
-		ID:         hex.EncodeToString(id),
+		//ID:         hex.EncodeToString(id),
+		ID:         id,
 		Name:       event.Name,
-		LocationID: string(event.Location.ID),
+		LocationID: event.Location.ID.Hex(),
 		Start:      time.Unix(event.StartDate, 0),
 		End:        time.Unix(event.EndDate, 0),
 	}

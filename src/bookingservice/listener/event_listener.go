@@ -6,7 +6,7 @@ import (
 	"rabbit/lib/msgqueue"
 	"rabbit/lib/persistence"
 
-	"gopkg.in/mgo.v2/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type EventProcessor struct {
@@ -37,10 +37,24 @@ func (p *EventProcessor) handleEvent(event msgqueue.Event) {
 	switch e := event.(type) {
 	case *contracts.EventCreatedEvent:
 		log.Printf("event %s created: %s", e.ID, e)
-		p.Database.AddEvent(persistence.Event{ID: bson.ObjectId(e.ID)})
+		id, err := primitive.ObjectIDFromHex(e.ID)
+		if err != nil {
+			log.Printf("Error parsing ObjectID: %v", err)
+			// Handle the error as needed
+		} else {
+			p.Database.AddEvent(persistence.Event{ID: id})
+		}
+		//p.Database.AddEvent(persistence.Event{ID: bson.ObjectId(e.ID)})
 	case *contracts.LocationCreatedEvent:
 		log.Printf("location %s created: %v", e.ID, e)
-		p.Database.AddLocation(persistence.Location{ID: bson.ObjectId(e.ID)})
+		id, err := primitive.ObjectIDFromHex(e.ID)
+		if err != nil {
+			log.Printf("Error parsing ObjectID: %v", err)
+			// Handle the error as needed
+		} else {
+			p.Database.AddLocation(persistence.Location{ID: id})
+		}
+		//p.Database.AddLocation(persistence.Location{ID: bson.ObjectId(e.ID)})
 	default:
 		log.Printf("unknown event type: %t", e)
 	}

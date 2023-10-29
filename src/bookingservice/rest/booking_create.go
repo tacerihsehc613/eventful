@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -43,8 +42,9 @@ func (h *CreateBookingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	eventIDMongo, _ := hex.DecodeString(eventID)
-	event, err := h.database.FindEvent(eventIDMongo)
+	//eventIDMongo, _ := hex.DecodeString(eventID)
+	//event, err := h.database.FindEvent(eventIDMongo)
+	event, err := h.database.FindEvent(eventID)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "error finding event %s", err)
@@ -76,9 +76,11 @@ func (h *CreateBookingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		UserID:  "someUserID",
 	}
 
+	// contracts.EventBookedEvent이 EventName()을 구현할 때 pointer receiver로 구현했기 때문에 &msg를 넘겨줘야 한다.
 	h.eventEmitter.Emit(&msg)
 
-	h.database.AddBookingForUser([]byte("someUserID"), booking)
+	//h.database.AddBookingForUser([]byte("someUserID"), booking)
+	h.database.AddBookingForUser("someUserID", booking)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(201)

@@ -16,6 +16,7 @@ func ServeAPI(endpoint string, tlsendpoint string, dbHandler persistence.Databas
 	eventsrouter := r.PathPrefix("/events").Subrouter()
 	eventsrouter.Methods("GET").Path("/{SearchCriteria}/{search}").HandlerFunc(handler.FindEventHandler)
 	eventsrouter.Methods("GET").Path("").HandlerFunc(handler.AllEventHandler)
+	eventsrouter.Methods("GET").Path("/{eventID}").HandlerFunc(handler.oneEventHandler)
 	eventsrouter.Methods("POST").Path("").HandlerFunc(handler.NewEventHandler)
 
 	//return http.ListenAndServe(":8181", r)

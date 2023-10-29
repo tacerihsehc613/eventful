@@ -9,7 +9,7 @@ import (
 
 var (
 	DBTypeDefault            = dblayer.DBTYPE("mongodb")
-	DBConnectionDefault      = "mongodb://127.0.0.1"
+	DBConnectionDefault      = "mongodb://127.0.0.1:27017"
 	RestfulEPDefault         = "localhost:8181"
 	RestfulTLSEPDefault      = "localhost:9191"
 	AMQPMessageBrokerDefault = "amqp://guest:guest@localhost:5672"
