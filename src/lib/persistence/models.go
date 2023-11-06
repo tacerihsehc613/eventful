@@ -34,6 +34,7 @@ type Event struct {
 }
 
 // omitempty를 할 경우, 빈 값이면 생략된다.
+// ObjectID('000000000000000000000000') 조차도 생략된다.
 type Location struct {
 	//ID        bson.ObjectId `bson:"_id"`
 	ID        primitive.ObjectID `bson:"_id"`

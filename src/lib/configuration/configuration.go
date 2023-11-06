@@ -31,7 +31,7 @@ func ExtractConfiguration(filename string) (ServiceConfig, error) {
 		RestfulTLSEPDefault,
 		AMQPMessageBrokerDefault,
 	}
-
+	//fmt.Println("filename: ", filename)
 	file, err := os.Open(filename)
 	if err != nil {
 		fmt.Println("Configuration file not found. Continuing with default values.")

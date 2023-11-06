@@ -19,7 +19,7 @@ export class EventListContainer extends React.Component<EventListContainerProps,
             events: []
         };
     
-    fetch(p.eventServiceURL)
+    fetch(p.eventServiceURL+"/events", {method: "GET"})
         .then<Event[]>(response=> response.json())
         .then(events=>{
             this.setState({
@@ -29,7 +29,7 @@ export class EventListContainer extends React.Component<EventListContainerProps,
         });
 
     }
-
+    
     render() {
         if (this.state.loading) {
             return <div>Loading...</div>;

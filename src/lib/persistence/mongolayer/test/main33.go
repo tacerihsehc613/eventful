@@ -91,9 +91,9 @@ func main() {
 	for i := range location.Halls {
 		fmt.Println(i, location.Halls[i])
 	}
-	// event := persistence.Event{
+	// event = persistence.Event{
 	// 	ID:        primitive.NewObjectID(),
-	// 	Name:      "A Event",
+	// 	Name:      "AAAAA Event",
 	// 	Duration:  48,       // Duration in minutes, for example
 	// 	StartDate: 20231027, // Unix timestamp for the start date
 	// 	EndDate:   20231029, // Unix timestamp for the end date

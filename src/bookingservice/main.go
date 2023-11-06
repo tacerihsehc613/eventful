@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"rabbit/bookingservice/listener"
-	"rabbit/eventservice/rest"
+	"rabbit/bookingservice/rest"
 	"rabbit/lib/configuration"
 	msgqueue_amqp "rabbit/lib/msgqueue/amqp"
 	"rabbit/lib/persistence/dblayer"
@@ -24,16 +24,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	eventListener, err := msgqueue_amqp.NewAMQPEventListner(conn, "event")
+	eventListener, err := msgqueue_amqp.NewAMQPEventListner(conn, "events", "booking")
 	if err != nil {
 		panic(err)
 	}
-	eventEmitter, err := msgqueue_amqp.NewAMQPEventEmitter(conn)
+	eventEmitter, err := msgqueue_amqp.NewAMQPEventEmitter(conn, "events")
 	if err != nil {
 		panic(err)
 	}
 	processor := &listener.EventProcessor{EventListener: eventListener, Database: dbhandler}
 	processor.ProcessEvents()
 
-	rest.ServeAPI(config.RestfulEndpoint, config.RestfulTLSEndPoint, dbhandler, eventEmitter)
+	rest.ServeAPI(config.RestfulEndpoint, dbhandler, eventEmitter)
 }

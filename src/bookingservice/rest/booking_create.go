@@ -31,6 +31,7 @@ type CreateBookingHandler struct {
 	database     persistence.DatabaseHandler
 }
 
+// http.Handler를 구현하기 위해 ServeHTTP를 구현한다.
 func (h *CreateBookingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	routeVars := mux.Vars(r)
 	var eventID string

@@ -9,11 +9,22 @@ import (
 
 type amqpEventEmitter struct {
 	connection *amqp.Connection
+	exchange   string
+	events     chan *emittedEvent
 }
 
-func NewAMQPEventEmitter(conn *amqp.Connection) (msgqueue.EventEmitter, error) {
+type emittedEvent struct {
+	event msgqueue.Event
+	error chan error
+}
+
+// AMQP 채널은 thread-safe 하지 않기 때문에, 이벤트를 보내기 위해 채널을 사용할 때는
+// 이벤트를 보내기 전에 채널을 생성해야 한다.
+// thread-safe하지 않다는 것은 AMQP 채널이 여러 스레드나 고루틴에 의해 동시에 안전하게 사용되도록 디자인되지 않았다는 것을 의미한다.
+func NewAMQPEventEmitter(conn *amqp.Connection, exchange string) (msgqueue.EventEmitter, error) {
 	emitter := &amqpEventEmitter{
 		connection: conn,
+		exchange:   exchange,
 	}
 
 	err := emitter.setup()
@@ -32,7 +43,8 @@ func (a *amqpEventEmitter) setup() error {
 
 	defer channel.Close()
 
-	return channel.ExchangeDeclare("events", "topic", true, false, false, false, nil)
+	//return channel.ExchangeDeclare("events", "topic", true, false, false, false, nil)
+	return channel.ExchangeDeclare(a.exchange, "topic", true, false, false, false, nil)
 }
 
 func (a *amqpEventEmitter) Emit(event msgqueue.Event) error {
@@ -54,5 +66,6 @@ func (a *amqpEventEmitter) Emit(event msgqueue.Event) error {
 		ContentType: "application/json",
 	}
 
-	return ch.Publish("events", event.EventName(), false, false, msg)
+	return ch.Publish(a.exchange, event.EventName(), false, false, msg)
+	//return ch.Publish("events", event.EventName(), false, false, msg)
 }

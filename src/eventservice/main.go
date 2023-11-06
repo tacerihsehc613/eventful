@@ -22,12 +22,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	emitter, err := msgqueue_amqp.NewAMQPEventEmitter(conn)
+	//emitter, err := msgqueue_amqp.NewAMQPEventEmitter(conn)
+	emitter, err := msgqueue_amqp.NewAMQPEventEmitter(conn, "events")
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("Connecting to database")
+	//fmt.Println("aa:", config.Databasetype, config.DBConnection)
 	dbhandler, _ := dblayer.NewPersistenceLayer(config.Databasetype, config.DBConnection)
 
 	httpErrChan, httptlsErrChan := rest.ServeAPI(config.RestfulEndpoint, config.RestfulTLSEndPoint, dbhandler, emitter)
