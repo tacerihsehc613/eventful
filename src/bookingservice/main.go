@@ -33,7 +33,9 @@ func main() {
 		panic(err)
 	}
 	processor := &listener.EventProcessor{EventListener: eventListener, Database: dbhandler}
-	processor.ProcessEvents()
+	//without go, the program will block here
+	go processor.ProcessEvents()
 
-	rest.ServeAPI(config.RestfulEndpoint, dbhandler, eventEmitter)
+	rest.ServeAPI("localhost:8282", dbhandler, eventEmitter)
+	//rest.ServeAPI(config.RestfulEndpoint, dbhandler, eventEmitter)
 }

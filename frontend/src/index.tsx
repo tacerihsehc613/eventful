@@ -4,6 +4,7 @@ import {HashRouter as Router, Route, Routes} from "react-router-dom";
 import { Hello } from './components/hello';
 import { EventListContainer } from './components/event_list_container';
 import { Navigation } from './components/navigation';
+import { EventBookingFormContainer } from './components/event_booking_form_container';
 
 // ReactDOM.render (
 //     <div className="container">
@@ -28,6 +29,8 @@ import { Navigation } from './components/navigation';
 //     }
 // }
 
+//<Route path="/events/:id/book" element={<EventBookingFormContainer eventServiceURL="http://localhost:8181" bookingServiceURL="http://localhost:8181" />} />
+
 class App extends React.Component<{},{}> {
     render() {
         //const eventList = () => <EventListContainer eventServiceURL="http://localhost:8181" />;
@@ -36,7 +39,8 @@ class App extends React.Component<{},{}> {
             <div className="container">
                 <h1>MyEvents</h1>
                 <Routes>
-                <Route path="/" element={<EventListContainer eventServiceURL="http://localhost:8181" />} />
+                <Route path="/" element={<EventListContainer eventServiceURL="http://localhost:8181"/>} />
+                <Route path="/events/:id/book" element={<EventBookingFormContainer eventServiceURL="http://localhost:8181" bookingServiceURL="http://localhost:8282" />} />
                 </Routes>
             </div>
         </Router>
