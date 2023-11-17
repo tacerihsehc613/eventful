@@ -1,0 +1,9 @@
+FROM debian:jessie
+
+COPY /src/bookingservice /bookingservice
+RUN useradd bookingservice
+USER bookingservice
+
+ENV LISTEN_URL=0.0.0.0:8282
+EXPOSE 8282
+CMD ["/bookingservice"]
