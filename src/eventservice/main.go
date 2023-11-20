@@ -18,6 +18,8 @@ func main() {
 
 	config, _ := configuration.ExtractConfiguration(*confPath)
 
+	fmt.Println("config.AMQPMessageBroker: ", config.AMQPMessageBroker)
+	fmt.Println("config.DBConnection: ", config.DBConnection)
 	conn, err := amqp.Dial(config.AMQPMessageBroker)
 	if err != nil {
 		panic(err)

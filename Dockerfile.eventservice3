@@ -1,0 +1,24 @@
+# Build stage
+FROM golang:1.20.5-alpine as Build
+
+# Set the working directory inside the container
+WORKDIR /eventservice
+
+# Copy the source code into the container
+COPY /src/eventservice /eventservice
+
+# Build the Go application
+RUN go mod init eventservice && \
+    go mod tidy && \
+    go build -o eventservice /eventservice/main.go
+
+FROM debian:jessie
+RUN useradd eventservice
+RUN chown -R eventservice:eventservice /eventservice
+USER eventservice
+RUN chmod a+x ./eventservice
+COPY --from=Build /eventservice /eventservice
+
+ENV LISTEN_URL=0.0.0.0:8181
+EXPOSE 8181
+CMD ["/eventservice"]

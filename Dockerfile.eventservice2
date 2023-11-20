@@ -1,0 +1,11 @@
+FROM debian:jessie
+
+COPY /src/eventservice /eventservice
+RUN useradd eventservice
+RUN chown -R eventservice:eventservice /eventservice
+USER eventservice
+RUN chmod a+x ./eventservice
+
+ENV LISTEN_URL=0.0.0.0:8181
+EXPOSE 8181
+CMD ["/eventservice"]

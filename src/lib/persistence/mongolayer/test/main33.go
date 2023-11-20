@@ -18,6 +18,7 @@ const C string = "events"
 func main() {
 
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://localhost"+":27017"))
+	//client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://events-db:27017"))
 	if err != nil {
 		panic(err)
 	}

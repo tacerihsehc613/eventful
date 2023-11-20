@@ -27,7 +27,8 @@ func ServeAPI(endpoint string, tlsendpoint string, dbHandler persistence.Databas
 
 	server := handlers.CORS()(r)
 	go func() {
-		httptlsErrChan <- http.ListenAndServeTLS(tlsendpoint, "cert.pem", "key.pem", server)
+		//httptlsErrChan <- http.ListenAndServeTLS(tlsendpoint, "./cert.pem", "./key.pem", server)
+		httptlsErrChan <- http.ListenAndServeTLS(tlsendpoint, "./eventservice/cert.pem", "./eventservice/key.pem", server)
 	}()
 
 	go func() {

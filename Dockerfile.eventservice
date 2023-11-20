@@ -1,9 +1,48 @@
+# Build stage
+FROM golang:1.20.5-alpine as Build
+
+# Set the working directory inside the container
+WORKDIR /rabbit
+
+# Copy the source code into the container
+COPY /src ./
+# COPY /src/lib/persistence/mongolayer/test/main33.go ./
+
+# Set the GOOS environment variable
+ENV GOOS=linux
+# ENV GOPATH /rabbit
+
+# Build the Go application
+# RUN go mod init rabbit && \
+RUN go mod tidy && \
+    # go build -o main /rabbit/eventservice/main.go -> this makes binary file main located in /rabbit. To make it located in /rabbit/eventservice, -o eventservice should be added.
+    go build -o eventservice/main /rabbit/eventservice/main.go 
+
+# Final stage
 FROM debian:jessie
 
-COPY /src/eventservice /eventservice
-RUN useradd eventservice
+# Create the eventservice user and set permissions
+RUN useradd -m -U -s /bin/false eventservice
+
+# Create the /eventservice directory
+RUN mkdir /eventservice
+
+# Copy the entire eventservice directory from the build stage
+COPY --from=Build /rabbit/eventservice/ /eventservice
+# COPY --from=Build /rabbit/ /eventservice
+
+# Set ownership of the /eventservice directory
+RUN chown -R eventservice:eventservice /eventservice
+
+# Switch to the eventservice user
 USER eventservice
 
+# Set execute permissions for the application
+RUN chmod a+x /eventservice
+
+# Set environment variables
 ENV LISTEN_URL=0.0.0.0:8181
 EXPOSE 8181
-CMD ["/eventservice"]
+
+# Specify the default command to run
+CMD ["/eventservice/main"]
