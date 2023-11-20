@@ -1,0 +1,50 @@
+# Build stage
+FROM golang:1.20.5-alpine as Build
+
+# Set the working directory inside the container
+WORKDIR /rabbit
+
+# Copy the source code into the container
+COPY /src ./
+COPY /src/lib/persistence/mongolayer/docker/main.go ./
+
+# Set the GOOS environment variable
+ENV GOOS=linux
+# ENV GOPATH /rabbit
+
+# Build the Go application
+# RUN go mod init rabbit && \
+RUN go mod tidy && \
+    # go build -o eventservice /rabbit/eventservice/main.go && \
+    go build -o main /rabbit/main.go
+
+
+# Final stage
+FROM debian:jessie
+
+# Create the eventservice user and set permissions
+RUN useradd -m -U -s /bin/false eventservice
+
+# Create the /eventservice directory
+RUN mkdir /eventservice
+
+# Copy the entire eventservice directory from the build stage
+COPY --from=Build /rabbit/main /eventservice
+#COPY --from=Build /rabbit /eventservice
+
+# Set ownership of the /eventservice directory
+RUN chown -R eventservice:eventservice /eventservice
+
+# Switch to the eventservice user
+USER eventservice
+
+# Set execute permissions for the application
+RUN chmod a+x /eventservice
+
+# Set environment variables
+ENV LISTEN_URL=0.0.0.0:8181
+EXPOSE 8181
+
+# Specify the default command to run
+CMD ["/eventservice/main"]
+# CMD go run /eventservice/main.go
