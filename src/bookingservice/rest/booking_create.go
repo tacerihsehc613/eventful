@@ -66,6 +66,7 @@ func (h *CreateBookingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	eventIDAsBytes, _ := event.ID.MarshalText()
+	//fmt.Println("eventIDAsBytes: ", eventIDAsBytes)
 	booking := persistence.Booking{
 		Date:    time.Now().Unix(),
 		EventID: eventIDAsBytes,

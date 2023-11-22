@@ -85,12 +85,13 @@ func (mgoLayer *MongoDBLayer) AddBookingForUser(id string, b persistence.Booking
 	coll := mgoLayer.client.Database(DB).Collection(USERS)
 	filter := bson.M{"_id": id}
 
-	// Define the update operation.
+	//Define the update operation.
 	update := bson.M{
 		"$addToSet": bson.M{"bookings": b},
 	}
+	opts := options.Update().SetUpsert(true)
 	// Use the UpdateOne method to apply the update.
-	_, err := coll.UpdateOne(context.TODO(), filter, update)
+	_, err := coll.UpdateOne(context.TODO(), filter, update, opts)
 	return err
 }
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"rabbit/bookingservice/listener"
 	"rabbit/bookingservice/rest"
 	"rabbit/lib/configuration"
@@ -15,6 +16,9 @@ func main() {
 	confPath := flag.String("config", "./configuration/config.json", "path to config file")
 	flag.Parse()
 	config, _ := configuration.ExtractConfiguration(*confPath)
+
+	fmt.Println("config.AMQPMessageBroker: ", config.AMQPMessageBroker)
+	fmt.Println("config.DBConnection: ", config.DBConnection)
 
 	dbhandler, err := dblayer.NewPersistenceLayer(config.Databasetype, config.DBConnection)
 	if err != nil {
@@ -36,6 +40,7 @@ func main() {
 	//without go, the program will block here
 	go processor.ProcessEvents()
 
-	rest.ServeAPI("localhost:8282", dbhandler, eventEmitter)
+	rest.ServeAPI("0.0.0.0:8282", dbhandler, eventEmitter)
+	//rest.ServeAPI("localhost:8282", dbhandler, eventEmitter)
 	//rest.ServeAPI(config.RestfulEndpoint, dbhandler, eventEmitter)
 }
