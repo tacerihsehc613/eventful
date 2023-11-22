@@ -1,0 +1,60 @@
+version: "3"
+networks:
+  myevents:
+    external: true # uncommenting this doesn't result in creation either
+    name: myevents
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - myevents
+  
+  events-db:
+    image: mongo
+    ports:
+      - 27017:27017
+    networks:
+      - myevents
+
+  events:
+    build:
+      context: .
+      dockerfile: Dockerfile.eventservice
+    ports:
+      - 8181:8181
+    depends_on:
+      - rabbitmq
+      - events-db
+    environment:
+      - AMQP_BROKER_URL=amqp://guest:guest@rabbitmq:5672/
+      - MONGO_URL=mongodb://events-db/events
+    networks:
+      - myevents
+    restart: always
+    
+  bookings:
+    build:
+      context: .
+      dockerfile: Dockerfile.bookingservice
+    ports:
+      - 8282:8282
+    depends_on:
+      - rabbitmq
+      - events-db
+    environment:
+      - AMQP_BROKER_URL=amqp://guest:guest@rabbitmq:5672/
+      - MONGO_URL=mongodb://events-db/users
+    networks:
+      - myevents
+    restart: always
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - 8080:80
