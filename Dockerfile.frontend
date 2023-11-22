@@ -1,0 +1,27 @@
+FROM node:18-alpine3.17
+
+COPY frontend /app
+WORKDIR /app
+RUN npm install -g webpack typescript
+RUN npm install
+# RUN npm install -g webpack-cli 
+RUN npm install -D webpack-cli
+# RUN npx webpack --config webpack.config.js
+RUN npx webpack
+
+# Install webpack-cli globally and run webpack
+# RUN npm install -g webpack-cli && \
+#     npm install && \
+#     npx webpack
+
+FROM nginx:1.25.3-alpine
+
+COPY --from=0 /app/index.html /usr/share/nginx/html/
+COPY --from=0 /app/dist /usr/share/nginx/html/dist/
+COPY --from=0 /app/node_modules/bootstrap/dist/css/bootstrap.min.css /usr/share/nginx/html/node_modules/bootstrap/dist/css/bootstrap.min.css
+COPY --from=0 /app/node_modules/react/umd/react.production.min.js /usr/share/nginx/html/node_modules/react/umd/react.production.min.js
+COPY --from=0 /app/node_modules/react-dom/umd/react-dom.production.min.js /usr/share/nginx/html/node_modules/react-dom/umd/react-dom.production.min.js
+COPY --from=0 /app/node_modules/promise-polyfill/dist/polyfill.min.js /usr/share/nginx/html/node_modules/promise-polyfill/dist/polyfill.min.js
+COPY --from=0 /app/node_modules/whatwg-fetch/fetch.js /usr/share/nginx/html/node_modules/whatwg-fetch/fetch.js
+
+
