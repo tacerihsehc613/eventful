@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: amqp-broker
 spec:
+  clusterIP: None
   selector:
     myevents/app: amqp-broker
   ports:
