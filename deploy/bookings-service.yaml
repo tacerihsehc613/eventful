@@ -1,13 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: events
+  name: bookings
 spec:
   selector:
-    myevents/app: events
+    myevents/app: bookings
     myevents/tier: api
-  # type: LoadBalancer
   ports:
   - port: 80
-    targetPort: 8181
+    targetPort: 8282
     name: http
