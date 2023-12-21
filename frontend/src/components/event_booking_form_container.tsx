@@ -40,7 +40,8 @@ export const EventBookingFormContainer: React.FC<EventBookingFormContainerProps>
     }, [id, props.eventServiceURL]);
 
     const handleSubmit = (seats: number) => {
-        const bookingUrl = `${props.bookingServiceURL}/events/${id}/bookings`;
+        //const bookingUrl = `${props.bookingServiceURL}/events/${id}/bookings`;
+        const bookingUrl = `${props.bookingServiceURL}/bookings/${id}`;
         const payload = { seats: seats };
 
         setState({

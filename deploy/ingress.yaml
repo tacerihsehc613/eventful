@@ -4,7 +4,10 @@ metadata:
   name: myevents
   namespace: default
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-path: /
+    #nginx.ingress.kubernetes.io/rewrite-path: /
+    ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    # nginx.ingress.kubernetes.io/add-base-url: "true"
     # kubernetes.io/ingress.class: "nginx"
 spec:
   ingressClassName: nginx
@@ -19,8 +22,8 @@ spec:
             name: events
             port: 
               number: 80
-      - path: /bookings
-        pathType: Prefix
+      - path: /bookings(/|$)(.*)
+        pathType: ImplementationSpecific
         backend:
           service:
             name: bookings

@@ -1,0 +1,38 @@
+# Stage 1: Build stage
+FROM node:18-alpine3.17 as build-stage
+
+WORKDIR /app
+
+COPY /frontend/package.json ./
+
+RUN npm install -g webpack typescript
+RUN npm install
+RUN npm install -D webpack-cli webpack-dev-server
+
+COPY /frontend ./
+
+# Build the application
+RUN npx webpack
+
+# Start webpack-dev-server in the background
+CMD ["npm", "run", "start", "&"]
+
+# Stage 2: Serve stage
+FROM nginx:1.25.3-alpine as serve-stage
+
+# Copy the built artifacts from the build stage to Nginx's HTML directory
+# COPY --from=build-stage /app/dist /usr/share/nginx/html
+
+COPY --from=build-stage /app/index.html /usr/share/nginx/html/
+COPY --from=build-stage /app/dist /usr/share/nginx/html/dist/
+COPY --from=build-stage /app/node_modules/bootstrap/dist/css/bootstrap.min.css /usr/share/nginx/html/node_modules/bootstrap/dist/css/bootstrap.min.css
+COPY --from=build-stage /app/node_modules/react/umd/react.production.min.js /usr/share/nginx/html/node_modules/react/umd/react.production.min.js
+COPY --from=build-stage /app/node_modules/react-dom/umd/react-dom.production.min.js /usr/share/nginx/html/node_modules/react-dom/umd/react-dom.production.min.js
+COPY --from=build-stage /app/node_modules/promise-polyfill/dist/polyfill.min.js /usr/share/nginx/html/node_modules/promise-polyfill/dist/polyfill.min.js
+COPY --from=build-stage /app/node_modules/whatwg-fetch/fetch.js /usr/share/nginx/html/node_modules/whatwg-fetch/fetch.js
+
+# Expose port 80
+# EXPOSE 80
+
+# Start Nginx in the foreground
+CMD ["nginx", "-g", "daemon off;"]

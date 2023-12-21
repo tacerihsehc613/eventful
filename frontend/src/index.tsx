@@ -31,7 +31,7 @@ import { EventBookingFormContainer } from './components/event_booking_form_conta
 
 //<Route path="/events/:id/book" element={<EventBookingFormContainer eventServiceURL="http://localhost:8181" bookingServiceURL="http://localhost:8181" />} />
 
-class App extends React.Component<{},{}> {
+/*class App extends React.Component<{},{}> {
     render() {
         //const eventList = () => <EventListContainer eventServiceURL="http://localhost:8181" />;
         return <Router>
@@ -45,8 +45,38 @@ class App extends React.Component<{},{}> {
             </div>
         </Router>
     }
-}
+}*/
 
+/*class App extends React.Component<{},{}> {
+    render() {
+        //const eventList = () => <EventListContainer eventServiceURL="http://localhost:8181" />;
+        return <Router>
+            <Navigation brandName="MyEvents" />
+            <div className="container">
+                <h1>MyEvents</h1>
+                <Routes>
+                <Route path="/" element={<EventListContainer eventServiceURL="http://0.0.0.0:8181"/>} />
+                <Route path="/events/:id/book" element={<EventBookingFormContainer eventServiceURL="http://0.0.0.0:8181" bookingServiceURL="http://0.0.0.0:8282" />} />
+                </Routes>
+            </div>
+        </Router>
+    }
+} */
+class App extends React.Component<{},{}> {
+    render() {
+        //const eventList = () => <EventListContainer eventServiceURL="http://localhost:8181" />;
+        return <Router>
+            <Navigation brandName="MyEvents" />
+            <div className="container">
+                <h1>MyEvents</h1>
+                <Routes>
+                <Route path="/" element={<EventListContainer eventServiceURL="http://api.myevents.example"/>} />
+                <Route path="/events/:id/book" element={<EventBookingFormContainer eventServiceURL="http://api.myevents.example" bookingServiceURL="http://api.myevents.example" />} />
+                </Routes>
+            </div>
+        </Router>
+    }
+}
 
 ReactDOM.render(
     <App />,
