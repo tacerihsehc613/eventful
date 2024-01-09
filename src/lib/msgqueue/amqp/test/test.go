@@ -1,13 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"os"
-
-	"github.com/streadway/amqp"
-)
-
-func main() {
+/*func main() {
 
 	// err := godotenv.Load()
 	// if err != nil {
@@ -66,4 +59,4 @@ func main() {
 		msg.Ack(false)
 	}
 
-}
+}*/

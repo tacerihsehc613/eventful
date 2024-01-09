@@ -47,7 +47,7 @@ import { EventBookingFormContainer } from './components/event_booking_form_conta
     }
 }*/
 
-/*class App extends React.Component<{},{}> {
+class App extends React.Component<{},{}> {
     render() {
         //const eventList = () => <EventListContainer eventServiceURL="http://localhost:8181" />;
         return <Router>
@@ -61,8 +61,8 @@ import { EventBookingFormContainer } from './components/event_booking_form_conta
             </div>
         </Router>
     }
-} */
-class App extends React.Component<{},{}> {
+} 
+/*class App extends React.Component<{},{}> {
     render() {
         //const eventList = () => <EventListContainer eventServiceURL="http://localhost:8181" />;
         return <Router>
@@ -76,7 +76,7 @@ class App extends React.Component<{},{}> {
             </div>
         </Router>
     }
-}
+}*/
 
 ReactDOM.render(
     <App />,
