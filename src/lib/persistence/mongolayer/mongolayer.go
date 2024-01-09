@@ -13,9 +13,11 @@ import (
 
 const (
 	DB        = "myevents"
+	DB2       = "mybookings"
 	USERS     = "users"
 	EVENTS    = "events"
 	LOCATIONS = "locations"
+	BOOKINGS  = "bookings"
 )
 
 type MongoDBLayer struct {
@@ -40,10 +42,35 @@ func NewMongoDBLayer(connection string) (*MongoDBLayer, error) {
 	}, nil
 }
 
-func (mgoLayer *MongoDBLayer) AddEvent(e persistence.Event) (string, error) {
+func (mgoLayer *MongoDBLayer) AddEvent(e persistence.Event) (string, string, error) {
 	//s := mgoLayer.getFreshSession()
 	//defer s.Close()
 	coll := mgoLayer.client.Database(DB).Collection(EVENTS)
+
+	if e.ID.IsZero() {
+		e.ID = primitive.NewObjectID()
+	}
+	if e.Location.ID.IsZero() || e.Location.ID.Hex() == "" {
+		e.Location.ID = primitive.NewObjectID()
+	}
+	//return e.ID.Hex(), s.DB(DB).C(EVENTS).Insert(e)
+	_, err := coll.InsertOne(context.TODO(), e)
+	if err != nil {
+		return "", "", err
+	}
+
+	return e.ID.Hex(), e.Location.ID.Hex(), nil
+
+}
+
+//var mutex sync.Mutex
+
+func (mgoLayer *MongoDBLayer) AddEvent4Booking(e persistence.Event) (string, string, error) {
+	//s := mgoLayer.getFreshSession()
+	//defer s.Close()
+	// mutex.Lock()
+	// defer mutex.Unlock()
+	coll := mgoLayer.client.Database(DB2).Collection(BOOKINGS)
 
 	if e.ID.IsZero() {
 		e.ID = primitive.NewObjectID()
@@ -54,10 +81,10 @@ func (mgoLayer *MongoDBLayer) AddEvent(e persistence.Event) (string, error) {
 	//return e.ID.Hex(), s.DB(DB).C(EVENTS).Insert(e)
 	_, err := coll.InsertOne(context.TODO(), e)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	return e.ID.Hex(), nil
+	return e.ID.Hex(), e.Location.ID.Hex(), nil
 
 }
 
@@ -82,7 +109,7 @@ func (mgoLayer *MongoDBLayer) AddLocation(l persistence.Location) (persistence.L
 } */
 
 func (mgoLayer *MongoDBLayer) AddBookingForUser(id string, b persistence.Booking) error {
-	coll := mgoLayer.client.Database(DB).Collection(USERS)
+	coll := mgoLayer.client.Database(DB2).Collection(USERS)
 	filter := bson.M{"_id": id}
 
 	//Define the update operation.
@@ -111,6 +138,20 @@ func (mgoLayer *MongoDBLayer) FindEvent(id string) (persistence.Event, error) {
 	}
 
 	coll := mgoLayer.client.Database(DB).Collection(EVENTS)
+	filter := bson.M{"_id": objectId}
+	var event persistence.Event
+	err = coll.FindOne(context.TODO(), filter).Decode(&event)
+	return event, err
+}
+
+func (mgoLayer *MongoDBLayer) FindEvent4Booking(id string) (persistence.Event, error) {
+	log.Println("Input ID:", id)
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return persistence.Event{}, err
+	}
+
+	coll := mgoLayer.client.Database(DB2).Collection(BOOKINGS)
 	filter := bson.M{"_id": objectId}
 	var event persistence.Event
 	err = coll.FindOne(context.TODO(), filter).Decode(&event)

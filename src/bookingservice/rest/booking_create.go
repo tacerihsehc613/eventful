@@ -45,7 +45,8 @@ func (h *CreateBookingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	//eventIDMongo, _ := hex.DecodeString(eventID)
 	//event, err := h.database.FindEvent(eventIDMongo)
-	event, err := h.database.FindEvent(eventID)
+	//event, err := h.database.FindEvent(eventID)
+	event, err := h.database.FindEvent4Booking(eventID)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "error finding event %s", err)

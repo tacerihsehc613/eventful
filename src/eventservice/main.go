@@ -10,6 +10,7 @@ import (
 	"rabbit/lib/persistence/dblayer"
 
 	"github.com/streadway/amqp"
+	//amqp "github.com/rabbitmq/amqp091-go"
 )
 
 func main() {

@@ -104,7 +104,7 @@ func (eh *eventServiceHandler) NewEventHandler(w http.ResponseWriter, r *http.Re
 		fmt.Fprintf(w, `{error: Error occured while decoding event data %s}`, err)
 		return
 	}
-	id, err := eh.dbhandler.AddEvent(event)
+	id, loc_id, err := eh.dbhandler.AddEvent(event)
 	if err != nil {
 		w.WriteHeader(500)
 		fmt.Fprintf(w, `{error: Error occured while persisting event %s}`, err)
@@ -112,9 +112,10 @@ func (eh *eventServiceHandler) NewEventHandler(w http.ResponseWriter, r *http.Re
 	}
 	msg := contracts.EventCreatedEvent{
 		//ID:         hex.EncodeToString(id),
-		ID:         id,
-		Name:       event.Name,
-		LocationID: event.Location.ID.Hex(),
+		ID:   id,
+		Name: event.Name,
+		//LocationID: event.Location.ID.Hex(),
+		LocationID: loc_id,
 		Start:      time.Unix(event.StartDate, 0),
 		End:        time.Unix(event.EndDate, 0),
 	}

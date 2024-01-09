@@ -20,6 +20,13 @@ services:
     networks:
       - myevents
 
+  bookings-db:
+    image: mongo
+    ports: 
+      - 27018:27017
+    networks:
+      - myevents
+
   events:
     build:
       context: .
@@ -44,10 +51,10 @@ services:
       - 8282:8282
     depends_on:
       - rabbitmq
-      - events-db
+      - bookings-db
     environment:
       - AMQP_BROKER_URL=amqp://guest:guest@rabbitmq:5672/
-      - MONGO_URL=mongodb://events-db/users
+      - MONGO_URL=mongodb://bookings-db/bookings
     networks:
       - myevents
     restart: always
